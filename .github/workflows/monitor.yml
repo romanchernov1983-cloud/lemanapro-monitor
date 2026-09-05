@@ -13,6 +13,7 @@ jobs:
 
       - name: Установить библиотеки
         run: pip install -r requirements.txt
-
+      - name: Установить браузер Chromium
+        run: playwright install --with-deps chromium
       - name: Запустить тест
         run: python monitor.py
