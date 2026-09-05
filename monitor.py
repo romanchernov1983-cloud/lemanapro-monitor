@@ -1,18 +1,31 @@
-import requests
+from playwright.sync_api import sync_playwright
 
 URL = "https://lemanapro.ru/catalogue/"
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-    "Accept-Language": "ru-RU,ru;q=0.9,en;q=0.8",
-}
+print("Запускаем настоящий браузер Chromium...")
 
-print("Открываем каталог Лемана ПРО...")
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
 
-response = requests.get(URL, headers=headers, timeout=30)
+    page = browser.new_page(
+        locale="ru-RU",
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    )
 
-print("Код ответа сайта:", response.status_code)
-print("Размер ответа:", len(response.text), "символов")
-print("Первые 500 символов ответа:")
-print(response.text[:500])
+    print("Открываем каталог Лемана ПРО...")
+
+    response = page.goto(URL, wait_until="domcontentloaded", timeout=60000)
+
+    print("Код ответа сайта:", response.status if response else "нет ответа")
+    print("Заголовок страницы:", page.title())
+    print("Текущий адрес:", page.url)
+
+    page.wait_for_timeout(5000)
+
+    print("Размер страницы:", len(page.content()), "символов")
+    print("Первые 500 символов:")
+    print(page.content()[:500])
+
+    browser.close()
+
+print("Проверка закончена.")
