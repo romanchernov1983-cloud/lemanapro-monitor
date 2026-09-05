@@ -2,27 +2,34 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-ARTICLE = "89366510"
-
-url = f"https://www.google.com/search?q=site%3Alemanapro.ru+%22{ARTICLE}%22"
+URL = "https://lemanapro.ru/rooms/vodosnabzhenie-i-vodootvedenie/"
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0.0.0 Safari/537.36"
 }
 
-print("Ищем артикул:", ARTICLE)
+print("Проверяем московскую категорию Лемана ПРО...")
 
-response = requests.get(url, headers=headers, timeout=30)
+response = requests.get(URL, headers=headers, timeout=30)
 
-print("Код ответа Google:", response.status_code)
+print("Код ответа:", response.status_code)
+print("Размер страницы:", len(response.text))
 
 soup = BeautifulSoup(response.text, "html.parser")
 text = soup.get_text(" ", strip=True)
 
-matches = re.findall(r"\d[\d\s]*[₽р]\b", text)
+articles = re.findall(r"Арт\.\s*(\d{8})", text)
+prices = re.findall(r"(\d[\d\s]*)\s*₽", text)
 
-print("Найденные цены:")
-for price in matches[:20]:
-    print(price)
+print("Найдено артикулов:", len(articles))
+print("Найдено цен:", len(prices))
+
+print("Первые артикулы:")
+for article in articles[:10]:
+    print(article)
+
+print("Первые цены:")
+for price in prices[:10]:
+    print(price.strip())
 
 print("Проверка закончена.")
