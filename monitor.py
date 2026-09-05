@@ -1,14 +1,13 @@
 import requests
 
-URL = "https://lemanapro.ru/sitemap/"
+URL = "https://lemanaprof.ru/catalogue/?page=1"
 
-print("Проверяем карту сайта Лемана ПРО...")
+print("Проверяем внешний каталог...")
 
 response = requests.get(URL, timeout=30)
 
-print("Код ответа сайта:", response.status_code)
+print("Код ответа:", response.status_code)
 print("Размер страницы:", len(response.text), "символов")
-
 print("Первые 1000 символов:")
 print(response.text[:1000])
 
