@@ -1,21 +1,15 @@
 import requests
-from bs4 import BeautifulSoup
 
-URL = "https://lemanapro.ru/rooms/gostinaya/"
+URL = "https://lemanapro.ru/sitemap/"
 
-print("Открываем московскую страницу Лемана ПРО...")
+print("Проверяем карту сайта Лемана ПРО...")
 
 response = requests.get(URL, timeout=30)
 
 print("Код ответа сайта:", response.status_code)
 print("Размер страницы:", len(response.text), "символов")
 
-soup = BeautifulSoup(response.text, "lxml")
-
-text = soup.get_text(" ", strip=True)
-
-print("Найдена страница:", "Гостиная" in text)
-print("Есть артикулы:", "Арт." in text)
-print("Есть цены:", "₽" in text)
+print("Первые 1000 символов:")
+print(response.text[:1000])
 
 print("Проверка закончена.")
